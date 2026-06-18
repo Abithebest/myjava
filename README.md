@@ -5,6 +5,8 @@
 - [ ] C++
 - [ ] SQL
 - [ ] R
+- [ ] Go
+- [ ] Kotlin (?)
 - [ ] Swift (?)
 - [ ] Rust
 
@@ -29,11 +31,20 @@
 - [ ] Sports Statistics Dashboard
 - [ ] Predict Sports Outcomes
 
+### Go
+- [ ] File Renamer
+- [ ] URL Shortener
+- [ ] Distributed Job Queue
+
+### Kotlin
+- [ ] Banking System
+- [ ] Photography Portfolio App (?)
+
 ### Swift
 _Undecided to pursue_
 - [ ] Grade Calculator
-- [ ] Event Planner App
-- [ ] Social Media App
+- [ ] Event Planner App (?)
+- [ ] Social Media App (?)
 
 ### Rust - Final Goal
 - [ ] Password Generator
