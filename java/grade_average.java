@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class hello {
+public class grade_average {
     static char gradeFunction(double avg) {
         if (avg >= 90) return 'A';
         else if(avg >= 80) return 'B';

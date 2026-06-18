@@ -6,7 +6,7 @@ Counts how many items were entered
 */
 import java.util.Scanner;
 
-public class list {
+public class shopping_list {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

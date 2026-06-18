@@ -10,10 +10,9 @@ public class Garage {
     //upgradable
     public static int garageSpaces = 10;
     public static int maxGarageTime = 2;
-    public static double parkingFee = 5.00;
+    public static double parkingFee = 5.0;
 
     //statistics
-    public static int garageLevel = 1;
     public static double garageMoney = 0;
     public static double garageRevenue = 0;
 
@@ -37,6 +36,7 @@ public class Garage {
             this.time = random.nextInt(0, maxGarageTime) + 1;
 
             garageMoney += this.time * parkingFee;
+            garageRevenue += this.time * parkingFee;
         }
 
         public boolean update() {
@@ -52,7 +52,7 @@ public class Garage {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("=== Parking Garage ===\n\n1. View Garage Status\n2. View Parked Cars\n3. Next Hour\n4. Exit\n\n> ");
+            System.out.print("=== Parking Garage ===\nMoney: $" + garageMoney + "\n\n1. View Garage Status\n2. View Garage Statistics\n3. View Parked Cars\n4. View Upgrades\n5. Next Hour\n6. Exit\n\n> ");
             String command = scanner.nextLine().toLowerCase();
             
             switch(command) {
@@ -61,8 +61,13 @@ public class Garage {
                     System.out.println("Total Spaces: " + garageSpaces + "\nOccupied Spaces: " + parkedCars.size() + "\nAvailable Spaces: " + (garageSpaces - parkedCars.size()));
                     break;
 
-                case "view parked cars":
+                case "view garage statistics":
                 case "2":
+                    System.out.println("Garage Revenue: $" + garageRevenue + "\nGarage Parking Fee: $" + parkingFee);
+                    break;
+
+                case "view parked cars":
+                case "3":
                     String carText = "";
                     for(int i=0; i < parkedCars.size(); i++) {
                         Car car = parkedCars.get(i);
@@ -72,8 +77,50 @@ public class Garage {
                     System.out.println("Parked Cars:\n" + carText);
                     break;
 
+                case "view upgrades":
+                case "4":
+                    System.out.print("1. Upgrade Spaces ($" + (garageSpaces * 5) + ")\n2. Upgrade Max Time ($" + (maxGarageTime * 10) + ")\n3. Upgrade Parking Fee ($" + (parkingFee * 20) + ")\n4. None\n\n> ");
+
+                    String upgrading = scanner.nextLine();
+                    switch(upgrading) {
+                        case "1":
+                            if(garageMoney < (garageSpaces * 5)) {
+                                System.out.println("Not enough money to upgrade. ($" + (garageSpaces * 5) + ")");
+                                break;
+                            }
+
+                            garageMoney -= (garageSpaces * 5);
+                            garageSpaces += 10;
+                            System.out.println("Upgraded garage spaces to " + garageSpaces + "!");
+                            break;
+                        case "2":
+                            if(garageMoney < (maxGarageTime * 10)) {
+                                System.out.println("Not enough money to upgrade. ($" + (maxGarageTime * 10) + ")");
+                                break;
+                            }
+
+                            garageMoney -= (maxGarageTime * 10);
+                            maxGarageTime += 2;
+                            System.out.println("Upgraded max time to " + maxGarageTime + "hr!");
+                            break;
+                        case "3":
+                            if(garageMoney < (parkingFee * 20)) {
+                                System.out.println("Not enough money to upgrade. ($" + (parkingFee * 20) + ")");
+                                break;
+                            }
+
+                            garageMoney -= (parkingFee * 20);
+                            parkingFee += 1.5;
+                            System.out.println("Upgraded parking fee to $" + parkingFee + "!");
+                            break;
+                        default:
+                            System.out.println("Closing upgrades...");
+                            break;
+                    }
+                    break;
+
                 case "next hour":
-                case "3":
+                case "5":
                     Iterator<Car> iterator = parkedCars.iterator();
                     while (iterator.hasNext()) {
                         Car car = iterator.next();
@@ -84,7 +131,7 @@ public class Garage {
                         }
                     }
                     
-                    int carsEntering = random.nextInt(garageLevel * 5) + 1;
+                    int carsEntering = random.nextInt(0, garageSpaces / 2) + 1;
                     int availableSpaces = garageSpaces - parkedCars.size();
                     if(availableSpaces >= carsEntering) {
                         for(int i=0; i < carsEntering; i++) {
@@ -102,7 +149,7 @@ public class Garage {
                     break;
                 
                 case "exit":
-                case "4":
+                case "6":
                     continueLoop = false;
                     System.out.println("Exited instance.");
                     break;
@@ -112,7 +159,7 @@ public class Garage {
                     break;
             }
 
-            System.out.println("\nPress [enter] to continue...");
+            System.out.print("\nPress [enter] to continue...");
             scanner.nextLine();
         }
 
