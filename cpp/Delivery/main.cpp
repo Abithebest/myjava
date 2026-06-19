@@ -1,14 +1,21 @@
 #include <iostream>
 #include <random>
 #include <map>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
 
-std::string menu = "=== Delivery Depot ===\n\n1. Recieve Package\n2. Ship Package\n3. View Packages\n4. Exit\n\n> ";
+#include "vehicle.h"
+
+std::string menu = "=== Delivery Depot ===\n\n1. Recieve Package\n2. Ship Package\n3. View Packages\n4. View Depot Statistics\n5. Exit\n\n> ";
 std::string menuChoice;
 std::vector<std::string> destinations = {"Florida", "New York"};
 
+int totalPackages = 0;
+double totalWeight = 0.0;
+
 std::string get_random_string(size_t length) {
-    const std::string pool = "abcdefghijklmnopqrstuvwxyz"
-                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const std::string pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                              "0123456789";
 
     std::random_device rd;
@@ -53,6 +60,9 @@ class Package {
             trackingNumber = get_random_string(6);
             destination = get_random_item(destinations);
             weight = get_random_weight();
+
+            totalPackages++;
+            totalWeight += weight;
         }
 
         std::string getTrackingNumber() {
@@ -66,6 +76,23 @@ class Package {
         }
 };
 std::map<std::string, Package> packages;
+
+std::string formatPackages() {
+    std::string packageString = "";
+    for(auto package : packages) {
+        Package packageData = package.second;
+        
+        std::ostringstream weightStream;
+        weightStream << std::fixed << std::setprecision(1)
+                    << packageData.getWeight();
+
+        packageString += "#" + packageData.getTrackingNumber() + 
+                        " -> " + packageData.getDestination() + 
+                        " -> " + weightStream.str() + " lbs.\n";
+    }
+
+    return packageString;
+}
 
 int main() {
     int menuChoice;
@@ -86,20 +113,47 @@ int main() {
 
         switch(menuChoice) {
             case 1: {
+                //Recieve Package
                 Package package;
                 packages[package.getTrackingNumber()] = package;
+                std::cout << "New package #" << package.getTrackingNumber() << " | Going to " << package.getDestination() << "\n\n";
+
                 break;
             }
 
-            case 2:
+            case 2: {
+                //Ship Package
+                std::cout << formatPackages() + "\nChoose a package to ship > ";
+
+                std::string transferNumber;
+                std::cin >> transferNumber;
+
+                transferNumber.erase(std::remove(transferNumber.begin(), transferNumber.end(), '#'), transferNumber.end());
+                std::transform(transferNumber.begin(), transferNumber.end(), transferNumber.begin(), [](unsigned char c) {
+                    return std::toupper(c);
+                });
+
+                packages.erase(transferNumber);
                 break;
+            }
+
             case 3:
+                //View Packages
+                std::cout << formatPackages() + "\n";
                 break;
+
             case 4:
+                //View Depot Statistics
+                break;
+
+            case 5:
+                //Exit
                 continueCommands = false;
                 std::cout << "Exited instance...\n";
                 break;
+
             default:
+                //Not a command
                 std::cout << "Not a command...\n";
                 break;
         }

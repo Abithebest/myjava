@@ -1,5 +1,7 @@
 # Summer of Code 2026
 
+I am learning these using https://www.w3schools.com and ChatGPT. w3schools helps me with syntax and different functionalities while ChatGPT gives me the project ideas and "phases" on what to work on for each project. (Check README.md of each language to see prompts)
+
 ## Goals
 - [x] Java
 - [ ] C++
