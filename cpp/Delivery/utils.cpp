@@ -7,9 +7,14 @@
 
 int totalPackages = 0;
 double totalWeight = 0.0;
+
+int depotLevel = 1;
+double depotCurrentWeight = 0.0;
+double depotMaxWeight = 150.0;
+double depotMoneyPerLbs = 1.5;
 double depotMoney = 0.0;
 
-std::string menu = "=== Delivery Depot ===\n\n1. Next Day\n2. Assign Packages\n3. Buy Vehicle\n4. View Packages\n5. View Vehicles\n6. View Depot Statistics\n7. Exit\n\n> ";
+std::string menu = "=== Delivery Depot ===\n\n1. Next Day\n2. Assign Packages\n3. Buy Vehicle\n4. View Packages\n5. View Vehicles\n6. View Depot Statistics\n7. Upgrade Depot\n8. Exit\n\n> ";
 std::string menuChoice;
 std::string destinations[] = {"Florida", "New York"};
 
@@ -58,9 +63,9 @@ std::string uppercase(std::string str) {
 
     return str;
 }
-std::string toFixed(double fixed) {
+std::string toFixed(double fixed, int fixNum) {
     std::ostringstream fixedNumber;
-    fixedNumber << std::fixed << std::setprecision(1)
+    fixedNumber << std::fixed << std::setprecision(fixNum)
                 << fixed;
 
     return fixedNumber.str();

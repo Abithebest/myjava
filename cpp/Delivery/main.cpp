@@ -1,26 +1,24 @@
 #include <iostream>
 #include <random>
 #include <map>
-
-#include <sstream>
-#include <iomanip>
-
 #include <algorithm>
 
 #include "vehicle.hpp"
 #include "package.hpp"
 #include "utils.hpp"
 
-//1. Next Day
-//  Instad of just one package, random amount of packages
-//  Depart all vehicles with packages in them
-//  Return vehicles that departed the day before
-//2. Assign Packages
-//  Add packages to a vehicle
+//truck maintenance - every departure weakens them by a random percentage
+//  tires, engine, chasis
+//truck fuel costs when comes back
 
-//3. Buy Vehicle
-//  Buy a vehicle
-//5. View Vehicles
+//workers
+//  hire either driver or loader
+//  pay wage each day
+//  upgrade workers (lvl. 5 max) - higher wages but can do more work
+//      driver - uses less fuel & less maintenance
+//          lvl.1 - default, lvl.2 - 25% less, lvl.3 - 50% less, lvl.4 - 75% less, lvl.5 - 100% less
+//      loader - adds more packages at a time
+//          lvl.1 - default, lvl.2 - 2 packages at a time, lvl.3 - 3 packages at a time, lvl. 4 - 4 packages at a time, lvl.5 - takes weight out of packages randomly
 
 int main() {
     int menuChoice;
@@ -49,15 +47,22 @@ int main() {
 
                 // Package Delivery
                 int packageCount = get_random_int(0, 5);
+                int packagesAdded = 0;
                 for(int i=0; i<packageCount; i++) {
                     Package package;
+                    if((depotCurrentWeight + package.getWeight()) > depotMaxWeight) {
+                        continue;
+                    }
                     packages[package.getTrackingNumber()] = package;
                     packageString += "New package #" + package.getTrackingNumber() + "\n";
 
                     totalPackages++;
+                    packagesAdded++;
                     totalWeight += package.getWeight();
+                    depotCurrentWeight += package.getWeight();
+                    depotMoney += package.getWeight() * depotMoneyPerLbs;
                 }
-                if(packageCount == 0) {
+                if(packageCount == 0 || packagesAdded == 0) {
                     packageString = "No Packages Today...\n";
                 }
 
@@ -66,6 +71,7 @@ int main() {
                     if(vehicle.departed == true) {
                         vehicle.departed = false;
                         for(const Package& package : vehicle.getCurrentPackages()) {
+                            depotCurrentWeight -= package.getWeight();
                             packages.erase(package.getTrackingNumber());
                         }
 
@@ -77,26 +83,20 @@ int main() {
                     }
                 }
                 if(vehicleString.length() == 0) {
-                    vehicleString = "No Vehicle Departures.";
+                    vehicleString = "No Vehicle Departures.\n";
                 }
 
-                std::cout << packageString + "\n" + vehicleString + "\n\n";
+                std::cout << packageString + "\n" + vehicleString + "\n";
                 break;
             }
 
             case 2: { // Assign Packages
-                std::string vehicleString = "";
-                for(const Vehicle& vehicle : vehicles) {
-                    double vehicleWeight = 0.0;
-                    std::string vehiclePackages = "";
-                    for(const Package& package : vehicle.getCurrentPackages()) {
-                        vehiclePackages += "#" + package.getTrackingNumber() + " - ";
-                    }
-                    
-                    vehicleString += "- " + vehicle.getId() + " | " + toFixed(vehicleWeight) + "/" + toFixed(vehicle.getMaxWeight()) + " lbs.\n" + vehiclePackages;
+                if(packages.empty() == true) {
+                    std::cout << "No packages to assign...\n\n";
+                    break;
                 }
 
-                std::cout << vehicleString + "\nChoose a vehicle to assign to > ";
+                std::cout << formatVehicles(false) + "\nChoose a vehicle to assign to > ";
 
                 std::string vehicleAssign;
                 std::cin >> vehicleAssign;
@@ -123,27 +123,95 @@ int main() {
 
                 transferNumber = remove_char(transferNumber, '#');
                 transferNumber = uppercase(transferNumber);
+                Package& assignmentPackage = packages[transferNumber];
+                if(packages.find(transferNumber) == packages.end()) {
+                    std::cout << "Package does not exist...\n\n";
+                    break;
+                }
+
+                if(assignmentPackage.getWeight() + vehicle.getCurrentWeight() > vehicle.getMaxWeight()) {
+                    std::cout << "Package assignment exceeds max weight for vehicle...\n\n";
+                    break;
+                }
+
+                depotCurrentWeight -= assignmentPackage.getWeight();
+                vehicle.addPackage(assignmentPackage);
+                packages.erase(transferNumber);
+
+                std::cout << "Assigned package #" + transferNumber + " to vehicle " + vehicle.getId() + "\n\n";
                 break;
             }
 
-            case 3: // Buy Vehicle
-                break;
+            case 3: { // Buy Vehicle
+                std::string vehicleString = "";
+                for(int i=0; i<5; i++) {
+                    VehicleType vType = static_cast<VehicleType>(i);
+                    VehicleStats vStats = VehicleStatData[i];
+                    std::string vName{vStats.name};
 
-            case 4: // View Packages
-                std::cout << formatPackages() + "\n";
+                    vehicleString += std::to_string(i + 1) + ". " + vName + " - " + toFixed(vStats.weight, 1) + " max lbs. | $" + toFixed(vStats.cost, 0) + "\n";
+                }
+
+                std::cout << "Depot Money: $" + toFixed(depotMoney, 0) + "\n\n" + vehicleString + "\nChoose vehicle to buy > ";
+                int vehicleNum;
+                std::cin >> vehicleNum;
+                if(vehicleNum > 5 || vehicleNum < 1) {
+                    std::cout << "Vehicle does not exist for purchase...\n\n";
+                    break;
+                }
+
+                VehicleStats vehicle = VehicleStatData[vehicleNum - 1];
+                std::string vName{vehicle.name};
+                if(depotMoney < vehicle.cost) {
+                    std::cout << "Not enough money...\n\n";
+                    break;
+                }
+
+                depotMoney -= vehicle.cost;
+                Vehicle newVehicle(vehicleNum - 1);
+                vehicles.push_back(newVehicle);
+
+                std::cout << "Bought new " + vName + " for $" + toFixed(vehicle.cost, 0) + "!\n\n";
                 break;
+            }
+
+            case 4: { // View Packages
+                std::string packageString = "Max Weight: " + toFixed(depotCurrentWeight, 1) + "/" + toFixed(depotMaxWeight, 1) + " lbs.";
+                if(packages.empty() == true) {
+                    packageString += "\nNo packages.\n";
+                }
+
+                packageString += "\n" + formatPackages();
+                std::cout << packageString + "\n";
+                break;
+            }
 
             case 5: // View Vehicles
+                std::cout << formatVehicles(true) + "\n";
                 break;
 
             case 6: { // View Depot Statistics
                 double averageWeight = totalWeight / totalPackages;
-
-                std::cout << "Packages Stored: " + toFixed(totalPackages) + "\nTotal Weight: " + toFixed(totalWeight) + " lbs.\nAverage Weight: " + toFixed(averageWeight) + " lbs.\n\n";
+                std::cout << "Packages Stored: " + toFixed(totalPackages, 0) + "\nTotal Weight: " + toFixed(totalWeight, 1) + " lbs.\nAverage Weight: " + toFixed(averageWeight, 1) + " lbs.\n\n";
                 break;
             }
 
-            case 7: // Exit
+            case 7: { // Upgrade Depot
+                double upgradeCost = depotLevel * 1500;
+                if(depotMoney < upgradeCost) {
+                    std::cout << "Not enough money to upgrade. $" + toFixed(upgradeCost, 0) + "\n\n";
+                    break;
+                }
+
+                depotMoney -= upgradeCost;
+                depotLevel++;
+                depotMaxWeight += 150.0;
+                depotMoneyPerLbs += 1.5;
+                std::cout << "Upgraded depot!\n\n";
+                break;
+            }
+
+            case 8: // Exit
                 continueCommands = false;
                 std::cout << "Exited instance...\n";
                 break;

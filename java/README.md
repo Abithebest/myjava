@@ -1,5 +1,7 @@
 # Java
 
+Time To Learn: Day 1
+
 ### Projects
 - [x] Grade Average
     - _From w3schools_

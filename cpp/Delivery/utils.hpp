@@ -8,6 +8,10 @@
 extern int totalPackages;
 extern double totalWeight;
 extern double depotMoney;
+extern int depotLevel;
+extern double depotCurrentWeight;
+extern double depotMaxWeight;
+extern double depotMoneyPerLbs;
 
 extern std::string menu;
 extern std::string menuChoice;
@@ -19,6 +23,6 @@ int get_random_int(int minimum, int maximum);
 std::string get_random_string(size_t length);
 std::string remove_char(std::string str, char character);
 std::string uppercase(std::string str);
-std::string toFixed(double fixed);
+std::string toFixed(double fixed, int fixNum);
 
 #endif
