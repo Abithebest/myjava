@@ -12,9 +12,9 @@ int depotLevel = 1;
 double depotCurrentWeight = 0.0;
 double depotMaxWeight = 150.0;
 double depotMoneyPerLbs = 1.5;
-double depotMoney = 0.0;
+double depotMoney = 1000000.0;
 
-std::string menu = "=== Delivery Depot ===\n\n1. Next Day\n2. Assign Packages\n3. Buy Vehicle\n4. View Packages\n5. View Vehicles\n6. View Depot Statistics\n7. Upgrade Depot\n8. Exit\n\n> ";
+std::string menu = "=== Delivery Depot===\n\n1. Next Day\n2. View Packages\n3. Assign Packages\n4. View Vehicles\n5. Buy Vehicle\n6. Maintain Vehicles\n7. View Workers\n8. Hire Worker\n9. Train Worker\n10. View Depot Statistics\n11. Upgrade Depot\n12. Exit\n\n> ";
 std::string menuChoice;
 std::string destinations[] = {"Florida", "New York"};
 

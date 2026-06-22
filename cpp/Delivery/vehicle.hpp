@@ -20,16 +20,18 @@ struct VehicleStats {
     std::string_view name;
     double cost;
     double weight;
+    double maxFuel;
 };
 inline const std::array<VehicleStats, (size_t)VehicleType::Count> VehicleStatData = {{
-    {"Van", 1000.0, 100.0},
-    {"Box Truck", 5000.0, 500.0},
-    {"Semi Truck", 50000.0, 5000.0},
-    {"Small Plane", 100000.0, 10000.0},
-    {"Big Plane", 500000.0, 50000.0}
+    {"Van", 1000.0, 100.0, 100.0},
+    {"Box Truck", 5000.0, 500.0, 500.0},
+    {"Semi Truck", 50000.0, 5000.0, 1000.0},
+    {"Small Plane", 100000.0, 10000.0, 5000.0},
+    {"Big Plane", 500000.0, 50000.0, 10000.0}
 }};
 
 struct VehicleMaintenance {
+    double fuel;
     double chasis;
     double engine;
     double tires;
@@ -59,6 +61,6 @@ class Vehicle {
 };
 extern std::vector<Vehicle> vehicles;
 
-std::string formatVehicles(bool includeMaintenance);
+std::string formatVehicles(bool includeMaintenance, bool includePackages);
 
 #endif

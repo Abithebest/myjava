@@ -17,7 +17,7 @@ struct PackageStat {
     double maxWeight;
 };
 inline const std::array<PackageStat, (size_t)PackageType::Count> PackageStats = {{
-    {"Envelope", 0.5, 5.0},
+    {"Envelope", 1.5, 7.5},
     {"Small Box", 10.0, 35.0},
     {"Big Box", 50.0, 100.0}
 }};
