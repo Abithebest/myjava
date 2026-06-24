@@ -20,12 +20,12 @@ I am learning these using https://www.w3schools.com and ChatGPT. w3schools helps
 - [x] Garage Simulator - _java/Garage.java_
 
 ### C++
-- [ ] Delivery Simulator - _cpp/Delivery/*_
+- [x] Delivery Simulator - _cpp/Delivery/*_
 - [ ] Traffic Simulator
 
 ### SQL
-- [ ] Restaurant Database - _sql/Restaurant/*_
-- [ ] Trucking Company Database
+- [x] Restaurant Database - _sql/Restaurant/*_
+- [ ] Trucking Company Database - _sql/Trucking/*_
 - [ ] Warehouse Inventory System
 
 ### R
