@@ -19,6 +19,7 @@ CREATE TABLE Shipments (
     CustomerID INTEGER NOT NULL,
     TruckID INTEGER NOT NULL,
     Revenue INTEGER NOT NULL,
+    Status TEXT NOT NULL CHECK(Status IN ('Delivered', 'Enroute', 'Delayed', 'Loading')),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
     FOREIGN KEY (TruckID) REFERENCES Trucks(TruckID)
 );
@@ -28,6 +29,12 @@ CREATE TABLE Packages (
     Item TEXT NOT NULL,
     Weight INTEGER NOT NULL,
     FOREIGN KEY (ShipmentID) REFERENCES Shipments(ShipmentID)
+);
+CREATE TABLE Maintenance (
+    MaintenanceID INTEGER PRIMARY KEY AUTOINCREMENT,
+    TruckID INTEGER NOT NULL,
+    Cost INTEGER NOT NULL,
+    FOREIGN KEY (TruckID) REFERENCES Trucks(TruckID)
 );
 
 INSERT INTO Drivers (TruckID, FirstName, LastName)
@@ -52,13 +59,13 @@ VALUES
 ("Florida Furniture"),
 ("Southern Supplies");
 
-INSERT INTO Shipments (CustomerID, TruckID, Revenue)
+INSERT INTO Shipments (CustomerID, TruckID, Revenue, Status)
 VALUES
-(1, 1, 1000),
-(2, 1, 9200),
-(1, 2, 5000),
-(3, 3, 2000),
-(4, 4, 2500);
+(1, 1, 1000, 'Delivered'),
+(2, 1, 9200, 'Loading'),
+(1, 2, 5000, 'Delivered'),
+(3, 3, 2000, 'Enroute'),
+(4, 4, 2500, 'Delayed');
 
 INSERT INTO Packages (ShipmentID, Item, Weight)
 VALUES
@@ -67,6 +74,14 @@ VALUES
 (3, 'Peaches', 1000),
 (1, 'Oranges', 900),
 (1, 'Pears', 500);
+
+INSERT INTO Maintenance (TruckID, Cost)
+VALUES
+(1, 800),
+(2, 700),
+(3, 1000),
+(1, 900),
+(1, 500);
 
 -- Phase 2
 SELECT * FROM Drivers;
@@ -237,4 +252,27 @@ FROM Shipments
 INNER JOIN Drivers ON Shipments.TruckID = Drivers.TruckID
 GROUP BY Drivers.DriverID;
 
--- Phase 12
+-- Phase 12 (cant do geographic so skipping)
+
+-- Phase 13
+SELECT * FROM Shipments;
+
+-- All delayed shipments
+SELECT * FROM Shipments
+WHERE Status = 'Delayed';
+
+-- All active shipments
+SELECT * FROM Shipments
+WHERE Status IN ('Enroute', 'Loading');
+
+-- Phase 14
+SELECT * FROM Maintenance;
+
+-- Total maintenance cost & Most expensive truck to maintain
+SELECT 
+    SUM(Cost) AS 'Total Maintenance Costs',
+    Maintenance.TruckID,
+    Trucks.UnitNumber
+FROM Maintenance
+INNER JOIN Trucks ON Trucks.TruckID = Maintenance.TruckID
+GROUP BY Maintenance.TruckID;

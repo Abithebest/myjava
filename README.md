@@ -5,9 +5,9 @@ I am learning these using https://www.w3schools.com and ChatGPT. w3schools helps
 ## Goals
 - [x] Java
 - [ ] C++
-- [ ] SQL
-- [ ] R
+- [x] SQL
 - [ ] Go
+- [ ] R
 - [ ] Kotlin (?)
 - [ ] Swift (?)
 - [ ] Rust
@@ -25,18 +25,17 @@ I am learning these using https://www.w3schools.com and ChatGPT. w3schools helps
 
 ### SQL
 - [x] Restaurant Database - _sql/Restaurant/*_
-- [ ] Trucking Company Database - _sql/Trucking/*_
-- [ ] Warehouse Inventory System
-
-### R
-- [ ] Analyze School Grades
-- [ ] Sports Statistics Dashboard
-- [ ] Predict Sports Outcomes
+- [x] Trucking Company Database - _sql/Trucking/*_
 
 ### Go
 - [ ] File Renamer
 - [ ] URL Shortener
 - [ ] Distributed Job Queue
+
+### R
+- [ ] Analyze School Grades
+- [ ] Sports Statistics Dashboard
+- [ ] Predict Sports Outcomes
 
 ### Kotlin
 _Undecided to learn_
